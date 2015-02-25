@@ -61,6 +61,7 @@ coloor<-c("red","green","blue","orange")
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=FALSE)
 
+
 BRADEpop<-genind2genpop(BRADE,process.other=T,missing="0")
 
 image(alt,col=brewer.pal(9,"Greys"))
