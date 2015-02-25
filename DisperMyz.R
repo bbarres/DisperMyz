@@ -7,6 +7,7 @@
 
 #loading the packages necessary for the analysis
 library(adegenet)
+library(gdata)
 
 #Loading the datafile into R, first you need to set the right working directory
 getwd()
@@ -34,12 +35,16 @@ sum(table(DIMYcc$patch)) #only 473 individuals left
 
 #here you can choose one the three previous datafile (DIMY, DIMYcccons, DIMYcc)
 JDD<-DIMYcc #name of the input file
+JDD<-drop.levels(JDD)
 
 #converting data to a genind format
 JDDade<-df2genind(JDD[,c("MP27","MP39","MP44","MP5","MP7","MP23","MP45","MP28","MP9","MP13",
                          "MP2","MP38","MP4","MP46")],ncode=6,ind.names=JDD$ID_simple, 
                  pop=JDD$patch,missing=NA,ploidy=2)
+#include the coordinates of the samples
 JDDade@other$xy<-JDD[,c("longitude","latitude")]
+#include the host from which individuals were sampled from
+JDDade@other$host<-JDD[,c("host")]
 #determination of the number of clusters
 clustJDDade<- find.clusters(JDDade,max.n.clust=35)
 #with 40 PCs, we lost nearly no information
@@ -61,15 +66,18 @@ coloor<-c("red","green","blue","orange")
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=FALSE)
 
+plot(JDDade@other$xy,cex=3,col=dapcJDDade$assign,pch=as.numeric(as.factor(JDDade@other$host)))
 
-BRADEpop<-genind2genpop(BRADE,process.other=T,missing="0")
 
-image(alt,col=brewer.pal(9,"Greys"))
-stars(table(pop(BRADE),dapcBRADE$assign),draw.segment=TRUE,
-      locations=BRADEpop@other$xy,
-      #locations=cbind(jitter(BRADEpop@other$xy$longitude,200),
-      #                jitter(BRADEpop@other$xy$latitude,200)),
-      add=T,len=0.5)
+
+# BRADEpop<-genind2genpop(BRADE,process.other=T,missing="0")
+# 
+# image(alt,col=brewer.pal(9,"Greys"))
+# stars(table(pop(JDDade),dapcJDDade$assign),draw.segment=TRUE,
+#       locations=JDDade@other$xy,
+#       #locations=cbind(jitter(BRADEpop@other$xy$longitude,200),
+#       #                jitter(BRADEpop@other$xy$latitude,200)),
+#       add=T,len=0.5)
 
 
 
