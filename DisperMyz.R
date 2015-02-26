@@ -66,6 +66,17 @@ coloor<-c("red","green","blue","orange")
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=FALSE)
 
+scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
+        solid=0.0,pch=19,cex=3,scree.da=FALSE)
+points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],col=coloor[dapcJDDade$assign],
+       pch=(as.numeric(as.factor(JDDade@other$host))+20))
+
+scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
+        solid=0.0,pch=19,cex=3,scree.da=FALSE)
+points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],col=coloor[dapcJDDade$assign],
+       pch=21,bg=coloor[(as.numeric(as.factor(JDDade@other$host)))])
+
+
 plot(JDDade@other$xy,cex=3,col=dapcJDDade$assign,pch=as.numeric(as.factor(JDDade@other$host)))
 
 
