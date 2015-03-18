@@ -64,12 +64,33 @@ scatter(dapcJDDade,xax=1, yax=2)
 
 coloor<-c("red","green","blue","orange")
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
+        solid=0.3,pch=19,cex=3,scree.da=TRUE)
+
+#scatter plot with the different K groups and then plotting the sampling host
+scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=FALSE)
+#oilseed_rape
+points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==1,1],
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==1,2],col="black",
+       ,cex=2,bg="black",pch=21)
+#peach
+points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==3,1],
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==3,2],col="black",
+       ,cex=2,bg="black",pch=21)
+#tobacco
+points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==4,1],
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==4,2],col="black",
+       ,cex=2,bg="black",pch=21)
+#other_crop
+points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==2,1],
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==2,2],col="black",
+       ,cex=2,bg="black",pch=21)
+
 
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.0,pch=19,cex=3,scree.da=FALSE)
 points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],col=coloor[dapcJDDade$assign],
-       pch=(as.numeric(as.factor(JDDade@other$host))+20))
+       pch=(as.numeric(as.factor(JDDade@other$host))+20),cex=2)
 
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.0,pch=19,cex=3,scree.da=FALSE)
