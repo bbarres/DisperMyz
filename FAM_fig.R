@@ -7,6 +7,7 @@
 #loading the packages necessary for the analysis
 library(adegenet)
 library(gdata)
+library(RColorBrewer)
 
 #Setting the right working directory
 setwd("~/work/Rfichiers/Githuber/DisperMyz_data")
@@ -215,8 +216,8 @@ structplot<-function(qmat,coolcol,effP,nameP,leg_y="",cexpop=1,cexy=2,
 #first you need to gather the number of individuals in each populations
 effpop<-c(380,71,28,17,168,18)
 #the names of the different populations might be useful too
-poptiquet<-c("Pêcher","Colza","Tabac","Autres Secondaires","Piège aérien",
-             "Hôtes multiples")
+poptiquet<-c("Pêcher","Colza","Tabac","Autres\nSecondaires","Piège\naérien",
+             "Hôtes\nmultiples")
 #be careful to use the same dataset that has been used for the DAPC 
 #computation
 structplot(t(dapcJDDade5$posterior),rainbow(5),effpop,poptiquet)
@@ -249,14 +250,17 @@ strK2<-t(read.table("FAMoutK2.str",header=FALSE,sep="\t")[,c(-1)])
 strK3<-t(read.table("FAMoutK3.str",header=FALSE,sep="\t")[,c(-1)])
 strK4<-t(read.table("FAMoutK4.str",header=FALSE,sep="\t")[,c(-1)])
 
-op<-par(mfrow=c(3,1),mar=c(0,4,0,0),oma=c(3,0,0,0))
-structplot(strK4,rainbow(5),effpop,poptiquet,
-           leg_y="K=4",cexy=1.2,mef=c(0,1,0,0,1),colbord="grey70")
-structplot(strK3,rainbow(5),effpop,poptiquet,
-           leg_y="K=3",cexy=1.2,mef=c(0,1,0,0,1),colbord="grey70")
-structplot(strK2,rainbow(5),effpop,poptiquet,
-           leg_y="K=2",cexy=1.2,mef=c(0,1,1,1,1),colbord="grey70",
-           distxax=0.08)
+display.brewer.all()
+coloor <- brewer.pal(4,"Greys")
+
+op<-par(mfrow=c(3,1),mar=c(0,4,0,0),oma=c(5,0,0,0))
+structplot(strK4,coloor,effpop,poptiquet,
+           leg_y="K=4",cexy=1.2,mef=c(0,1,0,0,1),colbord=NA)
+structplot(strK3,coloor,effpop,poptiquet,
+           leg_y="K=3",cexy=1.2,mef=c(0,1,0,0,1),colbord=NA)
+structplot(strK2,coloor,effpop,poptiquet,
+           leg_y="K=2",cexy=1.2,mef=c(0,1,1,1,1),colbord=NA,
+           distxax=0.08,angl=45)
 par(op)
 
 
