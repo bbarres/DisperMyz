@@ -10,7 +10,6 @@ library(adegenet)
 library(gdata)
 
 #Loading the datafile into R, first you need to set the right working directory
-getwd()
 setwd("~/work/Rfichiers/Githuber/DisperMyz_data")
 
 #first of all, we load the genetic dataset
