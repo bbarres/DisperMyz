@@ -253,56 +253,17 @@ strK4<-t(read.table("FAMoutK4.str",header=FALSE,sep="\t")[,c(-1)])
 display.brewer.all()
 coloor <- brewer.pal(4,"Greys")
 
-op<-par(mfrow=c(3,1),mar=c(0,4,0,0),oma=c(5,0,0,0))
+coloor <- c("firebrick","forestgreen","dodgerblue3","khaki2")
+
+op<-par(mfrow=c(3,1),mar=c(0,3,0,0),oma=c(8,0,0,0))
 structplot(strK4,coloor,effpop,poptiquet,
            leg_y="K=4",cexy=1.2,mef=c(0,1,0,0,1),colbord=NA)
 structplot(strK3,coloor,effpop,poptiquet,
            leg_y="K=3",cexy=1.2,mef=c(0,1,0,0,1),colbord=NA)
 structplot(strK2,coloor,effpop,poptiquet,
            leg_y="K=2",cexy=1.2,mef=c(0,1,1,1,1),colbord=NA,
-           distxax=0.08,angl=45)
+           distxax=0.15,angl=45,cexpop=2)
 par(op)
-
-
-
-###############################################################################
-#DAPC on microsatellites and resistance genotypes
-###############################################################################
-
-#converting data to a genind format including the resistance genotypes
-JDDall<-df2genind(JDD[,c("MP_27","MP_39","MP_44","MP_5","MP_7","MP_23",
-                         "MP_45","MP_28","MP_9","MP_13","MP_2","MP_38",
-                         "MP_4","MP_46","KDR","sKDR","MACE","R81T")],
-                  ncode=6,ind.names=JDD$sample_ID, 
-                  pop=JDD$year,ploidy=2)
-#include the coordinates of the samples
-JDDall@other$xy<-JDD[,c("longitude","latitude")]
-
-
-
-#now we analyse the adegenet format dataset with dapc
-JDDade<-JDDall
-#determination of the number of clusters
-clustJDDade<- find.clusters(JDDade,max.n.clust=35)
-#with 40 PCs, we lost nearly no information
-clustJDDade<- find.clusters(JDDade,n.pca=30,max.n.clust=35) #chose 5 clusters
-#which individuals in which clusters per population
-table(pop(JDDade),clustJDDade$grp)
-#DAPC by itself, first we try to optimized the number of principal component 
-#(PCs) to retain to perform the analysis
-dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=30)
-temp<-optim.a.score(dapcJDDade)
-dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=15)
-temp<-optim.a.score(dapcJDDade)
-dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=3,n.pca=10)
-#STRUCTURE-like graphic
-compoplot(dapcJDDade,lab=pop(JDDade),legend=FALSE,
-          cex.names=0.3,cex.lab=0.5,cex.axis=0.5,col=coloor)
-#scatter plot
-scatter(dapcJDDade,xax=1, yax=2,col=coloor)
-#a more beautifull scatter plot
-scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
-        solid=0.3,pch=19,cex=3,scree.da=TRUE)
 
 
 ###############################################################################
@@ -317,7 +278,7 @@ scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
 #with underscore, replace "?1" by "alpha", and remove double white spaces or 
 #it will provoc importation problem or failure
 
-resstr_cccons<-read.table(file="AgrAphout.str", header=T,sep=" ",
+resstr_cccons<-read.table(file="FAM_deltaK.txt", header=T,sep="\t",
                           blank.lines.skip=T)
 
 #a function which compute delta K values, nb_K is the number of different K 
@@ -365,7 +326,7 @@ chooseK<-function(str_out,nb_K,nb_rep) {
   return(reztable)
 }
 
-deltastr_cccons<-chooseK(resstr_cccons,10,100)
+deltastr_cccons<-chooseK(resstr_cccons,10,10)
 
 #a function to plot variation of Delta K and Ln(P(X|K)) with K. 
 plotdeltaK<-function(datadeltaK,nb_K,titre){
@@ -390,38 +351,10 @@ plotdeltaK<-function(datadeltaK,nb_K,titre){
   par(op)
 }
 
-#the same function using log(deltaK), just in order to see smaller variation 
-#of deltaK
 
-#a function to plot variation of Delta K and Ln(P(X|K)) with K. 
-plotlogdeltaK<-function(datadeltaK,nb_K,titre){
-  #'datadeltak': the output file of 'chooseK' function
-  #'nb_K': the number of different K considered
-  #'titre': the title of the plot you want to be displayed
-  op<-par(pty="s")
-  plot(log(datadeltaK[1:(nb_K-2),8]+1),type="b",pch=24,cex=2.5,lwd=4,lty=1,
-       col="transparent",bg="white",bty="n",ann=F)
-  par(new=TRUE)
-  plot(log(datadeltaK[1:(nb_K-2),8]+1),type="b",pch=24,bty="n",xaxt="n",yaxt="n",
-       ann=F,cex=2.5,lwd=4,lty=1)
-  axis(side=1,at=seq(1,13,1),lwd=3,font.axis=2)
-  axis(side=2,lwd=3,font.axis=2)
-  title(ylab="Ln(Delta K+1)",font.lab=2,cex.lab=1.5)
-  par(new=TRUE)
-  plot(datadeltaK[1:(nb_K-2),2],type="b",pch=22,cex=2.5,lwd=4,lty=2,
-       col="grey50",bg="white",bty="n",xaxt="n",yaxt="n",ann=F)
-  axis(side=4,lwd=3,font.axis=2,col="grey50")
-  mtext("Ln(P(X|K))", side=4, line=4,font=2,cex=1,col="grey50")
-  title(main=titre,xlab="K",font.lab=2,cex.lab=1.5,cex.main=2)
-  par(op)
-}
-
-op<-par(mfrow=c(1,2))
 plotdeltaK(deltastr_cccons,10,
-           "Conservative clone correction dataset (n=173)")
-plotlogdeltaK(deltastr_cccons,10,
-              "Conservative clone correction dataset (n=173)")
-par(op)
+           "Détermination du meilleur K par méthode Evanno (n=682)")
+
 #you can obtain the same figure as in the manuscript by exporting the plot to 
 #png format, with a width of 2400 X 1100 pixels
 
