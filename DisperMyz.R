@@ -1,8 +1,8 @@
-###########################################################################################################
-###########################################################################################################
+###############################################################################
+###############################################################################
 #Script for the analyses of DisperMyz data
-###########################################################################################################
-###########################################################################################################
+###############################################################################
+###############################################################################
 
 
 #loading the packages necessary for the analysis
@@ -14,8 +14,8 @@ setwd("~/work/Rfichiers/Githuber/DisperMyz_data")
 
 #first of all, we load the genetic dataset
 DIMY<-read.table("dispermyz.dat",header=T,sep="\t")
-#here is the structure of the datafile, for explanation of each columns, see ReadMe.txt file in DRYAD 
-#repository
+#here is the structure of the datafile, for explanation of each columns, see 
+#ReadMe.txt file in DRYAD repository
 head(DIMY)
 #a summary of the different variables
 summary(DIMY)
@@ -37,9 +37,10 @@ JDD<-DIMYcc #name of the input file
 JDD<-drop.levels(JDD)
 
 #converting data to a genind format
-JDDade<-df2genind(JDD[,c("MP27","MP39","MP44","MP5","MP7","MP23","MP45","MP28","MP9","MP13",
-                         "MP2","MP38","MP4","MP46")],ncode=6,ind.names=JDD$ID_simple, 
-                 pop=JDD$patch,missing=NA,ploidy=2)
+JDDade<-df2genind(JDD[,c("MP27","MP39","MP44","MP5","MP7","MP23","MP45",
+                         "MP28","MP9","MP13","MP2","MP38","MP4","MP46")],
+                  ncode=6,ind.names=JDD$ID_simple,pop=JDD$patch,missing=NA,
+                  ploidy=2)
 #include the coordinates of the samples
 JDDade@other$xy<-JDD[,c("longitude","latitude")]
 #include the host from which individuals were sampled from
@@ -50,8 +51,8 @@ clustJDDade<- find.clusters(JDDade,max.n.clust=35)
 clustJDDade<- find.clusters(JDDade,n.pca=40,max.n.clust=35) #chose 4 clusters
 #which individuals in which clusters per population
 table(pop(JDDade),clustJDDade$grp)
-#DAPC by itself, first we try to optimized the number of principal component (PCs) 
-#to retain to perform the analysis
+#DAPC by itself, first we try to optimized the number of principal component 
+#(PCs) to retain to perform the analysis
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=100)
 temp<-optim.a.score(dapcJDDade)
 dapcJDDade<-dapc(JDDade,clustJDDade$grp,n.da=5,n.pca=30)
@@ -70,34 +71,37 @@ scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.3,pch=19,cex=3,scree.da=FALSE)
 #oilseed_rape
 points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==1,1],
-       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==1,2],col="black",
-       ,cex=2,bg="black",pch=21)
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==1,2],
+       col="black",cex=2,bg="black",pch=21)
 #peach
 points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==3,1],
-       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==3,2],col="black",
-       ,cex=2,bg="black",pch=21)
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==3,2],
+       col="black",cex=2,bg="black",pch=21)
 #tobacco
 points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==4,1],
-       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==4,2],col="black",
-       ,cex=2,bg="black",pch=21)
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==4,2],
+       col="black",cex=2,bg="black",pch=21)
 #other_crop
 points(dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==2,1],
-       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==2,2],col="black",
-       ,cex=2,bg="black",pch=21)
+       dapcJDDade$ind.coord[as.numeric(as.factor(JDDade@other$host))==2,2],
+       col="black",cex=2,bg="black",pch=21)
 
 
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.0,pch=19,cex=3,scree.da=FALSE)
-points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],col=coloor[dapcJDDade$assign],
+points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],
+       col=coloor[dapcJDDade$assign],
        pch=(as.numeric(as.factor(JDDade@other$host))+20),cex=2)
 
 scatter(dapcJDDade,xax=1,yax=2,cstar=1,cell=0,clab=0,col=coloor,
         solid=0.0,pch=19,cex=3,scree.da=FALSE)
-points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],col=coloor[dapcJDDade$assign],
+points(dapcJDDade$ind.coord[,1],dapcJDDade$ind.coord[,2],
+       col=coloor[dapcJDDade$assign],
        pch=21,bg=coloor[(as.numeric(as.factor(JDDade@other$host)))])
 
 
-plot(JDDade@other$xy,cex=3,col=dapcJDDade$assign,pch=as.numeric(as.factor(JDDade@other$host)))
+plot(JDDade@other$xy,cex=3,col=dapcJDDade$assign,
+     pch=as.numeric(as.factor(JDDade@other$host)))
 
 
 
