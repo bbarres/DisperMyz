@@ -151,7 +151,8 @@ write.table(dapcJDDade5$posterior,file="AgrAphDAPCK5.txt",sep="\t",
 ###############################################################################
 
 structplot<-function(qmat,coolcol,effP,nameP,leg_y="",cexpop=1,cexy=2,
-                     mef=c(1,1,1,1,1),colbord="NA",angl=0,distxax=0.005)
+                     mef=c(1,1,1,1,1),colbord="NA",angl=0,distxax=0.005,
+                     spacepop=0)
   #'qmat': the q-matrix like matrix
   #'coolcol': a vector of colors, for the different genetic clusters
   #'effP': a vector giving the number of individuals in each population
@@ -167,39 +168,48 @@ structplot<-function(qmat,coolcol,effP,nameP,leg_y="",cexpop=1,cexy=2,
 #'colbord': the color of the line between individuals
 #'angl': the angle of the tag of the x-axis
 #'distxax': control the distance of the tag to the x-axis
+#'spacepop': space between populations, in number of bars
 
 {
+  vecspace<-c(rep(0,effP[1]))
+  for (i in 1:(length(effP)-1)) {
+    vecspace<-c(vecspace,spacepop,rep(0,effP[i+1]-1))
+  }
+  
   barplot(qmat,col=coolcol,beside=FALSE,border=colbord,
-          space=0,ylim=c(-0.03,1.03),axisnames=FALSE,axes=FALSE)
+          space=vecspace,ylim=c(-0.03,1.03),axisnames=FALSE,axes=FALSE)
   
   if(mef[1]==1) {
     #drawing an external rectangle
     rect(0-1/dim(qmat)[2],
          0-1/500,
-         dim(qmat)[2]+1/dim(qmat)[2],
+         dim(qmat)[2]+spacepop*(length(effP)-1)+1/dim(qmat)[2],
          1+1/500,
          lwd=3)
   }
   
   if(mef[2]==1) {
+    decal<-c(0,cumsum(rep(spacepop,length(effP)-1)))
     #deliminated the different populations
-    rect(c(0,cumsum(effP))[1:length(effP)],
+    rect(c(0,cumsum(effP))[1:length(effP)]+decal,
          rep(0,length(effP)),
-         cumsum(effP),
+         cumsum(effP)+decal,
          rep(1,length(effP)),
          lwd=2)
   }
   
   if(mef[3]==1) {
+    decal<-c(0,cumsum(rep(spacepop,length(effP)-1)))
     #add an x-axis
-    axis(1,at=c(0,cumsum(effP))[1:length(effP)]+
+    axis(1,at=c(0,cumsum(effP))[1:length(effP)]+decal+
            (cumsum(effP)-c(0,cumsum(effP))[1:length(effP)])/2,
-         labels=FALSE,pos=0,lwd.ticks=2)
+         labels=FALSE,pos=0,lwd.ticks=2,lwd=0)
   }
   
   if(mef[4]==1) {
+    decal<-c(0,cumsum(rep(spacepop,length(effP)-1)))
     #add the name of the different populations
-    text(c(0,cumsum(effP))[1:length(effP)]+
+    text(c(0,cumsum(effP))[1:length(effP)]+decal+
            (cumsum(effP)-c(0,cumsum(effP))[1:length(effP)])/2,
          rep(par("usr")[3]-distxax,length(effP)),labels=nameP,srt=angl,
          xpd=NA,pos=1,cex=cexpop)
@@ -264,6 +274,18 @@ structplot(strK2,coloor,effpop,poptiquet,
            leg_y="K=2",cexy=1.2,mef=c(0,1,1,1,1),colbord=NA,
            distxax=0.15,angl=45,cexpop=2)
 par(op)
+
+#or with space between populations
+op<-par(mfrow=c(3,1),mar=c(0,3,0,0),oma=c(8,0,0,0))
+structplot(strK4,coloor,effpop,poptiquet,spacepop=10,
+           leg_y="K=4",cexy=1.2,mef=c(0,1,0,0,1),colbord=NA)
+structplot(strK3,coloor,effpop,poptiquet,spacepop=10,
+           leg_y="K=3",cexy=1.2,mef=c(0,1,0,0,1),colbord=NA)
+structplot(strK2,coloor,effpop,poptiquet,spacepop=10,
+           leg_y="K=2",cexy=1.2,mef=c(0,1,1,1,1),colbord=NA,
+           distxax=0.15,angl=0,cexpop=1.5)
+par(op)
+#export to pdf 25 x 5 inches
 
 
 ###############################################################################
